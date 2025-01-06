@@ -48,6 +48,13 @@ module.exports = {
           typescript: {},
         },
       },
+      rules: {
+        "react/prop-types": "off",
+        "no-constant-condition": "off",
+        "no-unused-vars": "warn",
+        "react-hooks/exhaustive-deps": "off",
+        "react/jsx-key": "warn"
+      }
     },
 
     // Typescript
@@ -71,6 +78,10 @@ module.exports = {
         "plugin:import/recommended",
         "plugin:import/typescript",
       ],
+      rules: {
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
     },
 
     // Node
