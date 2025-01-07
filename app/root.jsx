@@ -6,7 +6,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-import mainStyle from "~/Styles/main.css"; 
+import mainStyle from "~/Styles/main.css?url"; 
 
 export function Layout({ children }) {
   return (
@@ -32,6 +32,9 @@ export default function App() {
 
 export function links() {
   return [
-    { rel: "stylesheet", href: mainStyle }
+    { rel: "stylesheet", href: mainStyle },
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
+    { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "true" },
+    { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Lexend:wght@100..900&display=swap" }
   ];
 }

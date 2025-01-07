@@ -1,7 +1,12 @@
+import Container from "~/Components/Container";
+import Properties from "~/Components/Properties";
+
 export default function _index() {
     return (
-        <div className="flex">
-            <h1>Hi</h1>
-        </div>
+        <Container>
+            <Properties 
+
+            />
+        </Container>
     );
 }

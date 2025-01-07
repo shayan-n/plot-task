@@ -1,2 +1,2 @@
-@tailwind base;@tailwind components;@tailwind utilities
+@tailwind base;@tailwind components;@tailwind utilities;*{font-family:"Lexend"}:focus{outline:2px solid #025ec2}.ui-input{padding:0.5rem .75rem;border-radius:.5rem;display:flex;flex-direction:column;background-color:#fff;box-shadow:rgba(17,17,26,0.1) 0px 1px 0px;justify-content:center}.ui-input label{font-size:.875rem;color:#414141}.ui-input input{all:unset;width:100%;font-size:1rem;color:#000;font-weight:300}.ui-input:active{outline:2px solid #025ec2}.ui-input:hover{background-color:#fafafa}
 /*# sourceMappingURL=main.css.map */
