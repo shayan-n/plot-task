@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 export default function Plot() {
     const svgRef = useRef(null);
     const [bound, setBound] = useState(null);
+    const [d, setD] = useState([0, 10]);
+    const [r, setR] = useState([0, 10]);
     
     // only re-render on window change
     useEffect(() => {
@@ -21,8 +23,8 @@ export default function Plot() {
     plot({
         svgNode: svgRef.current,
         bound: bound,
-        domain: [0, 10],
-        range: [0, 10],
+        domain: d,
+        range: r,
         margin: {
             top: 30,
             right: 30,
@@ -38,7 +40,9 @@ export default function Plot() {
             { x: 9, y: 1 },
             { x: 1, y: 8 },
             { x: 3, y: 6 },
-        ]
+        ],
+        setDomain: setD,
+        setRange: setR,
     });
 
     return (

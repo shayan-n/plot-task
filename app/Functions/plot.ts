@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import type { D3ZoomEvent } from "d3";
 
 type Bound = {
     width: number,
@@ -25,6 +24,8 @@ interface IPlotArgs {
     margin: IMargin,
     domain: number[],
     range: number[],
+    setDomain: ([...args]: unknown[]) => void,
+    setRange: ([...args]: unknown[]) => void,
     data?: PlotPoint[]
 }
 
@@ -34,8 +35,12 @@ export function plot({
     margin,
     domain=[0, 10], 
     range=[0, 10],
-    data=[]
+    setDomain,
+    setRange,
+    data=[],
 }: IPlotArgs ) {
+    console.log("Ploted");
+
     // Select SVG Elements
     const $svg = d3.select(svgNode);
     const $xAxis = $svg.select("#x-axis");
@@ -66,7 +71,7 @@ export function plot({
     const yAxis = d3.axisLeft(y);
     
     // Draw
-    const draw = () => {
+    const initDraw = () => {
         if (bound === null) return;
 
         // Axises
@@ -94,10 +99,10 @@ export function plot({
     }
 
     // Events
-    // - zoom
     const zoom = d3.zoom();
+    const brush = d3.brush();
 
-    const handleZoom = (e: D3ZoomEvent<any, any>) => {
+    const handleZoom = (e: d3.D3ZoomEvent<any, any>) => {
         const { transform } = e;
         
         const rescaleX = transform.rescaleX(x);
@@ -120,7 +125,18 @@ export function plot({
         );
     }
 
-    const reset = () => {
+    const zoomOnSelection = (e: any) => {
+        if (bound === null) return;
+
+        const extent = e.selection;
+        const xNewDomain = [x.invert(extent[0][0]), x.invert(extent[1][0])]
+        const yNewDomain = [y.invert(extent[1][1]), y.invert(extent[0][1])]
+        
+        setDomain(xNewDomain);
+        setRange(yNewDomain);
+    }
+
+    const resetZoom = () => {
         $svg.call(zoom.transform, d3.zoomIdentity);
     }
 
@@ -132,22 +148,17 @@ export function plot({
         zoom.on("zoom", handleZoom);
     }
     
-    const zoomOnASection = (e: any) => {
-        $svg.call(zoom.extent(e.selection));
-    }
-
-    // - cross
     const handleCross = (e: any) => {
         if (bound === null) return;
         const [mouseX, mouseY] = d3.pointer(e);
         
         $cross
           .select("#vertical-cross")
-          .attr("x1", mouseX)
-          .attr("x2", mouseX)
-          .attr("y1", margin.top)
-          .attr("y2", bound.height - margin.bottom)
-          .attr("stroke", "red");
+            .attr("x1", mouseX)
+            .attr("x2", mouseX)
+            .attr("y1", margin.top)
+            .attr("y2", bound.height - margin.bottom)
+          .call(drawCrossLine)
 
         $cross
           .select("#horizontal-cross")
@@ -155,22 +166,16 @@ export function plot({
             .attr("y2", mouseY)
             .attr("x1", margin.left)
             .attr("x2", bound.width - margin.right)
-            .attr("stroke", "red");
+          .call(drawCrossLine)
     }
-    
-    // - zoom by brush
-    const brush = d3.brush();
-
-
-    // brush.on("brush", handleBrush);
-    brush.on("end", zoomOnASection)
-
+        
     // Apply
     // $svg.call(zoom as any);
-    $brush.call(brush as any);
-    applyZoom();
+    // $brush.call(brush as any);
+    // brush.on("end", zoomOnASection)
+    // applyZoom();
     // $svg.on("mousemove", handleCross);
-    draw();
+    initDraw();
 }
 
 function drawGridLines(selection: any, ticks: number[], x: any, bound: Bound, margin: IMargin, dir: "vertical" | "horizontal") {
@@ -201,4 +206,9 @@ function drawDatas(selection: any, data: PlotPoint[], x: any, y: any) {
         .attr("r", 3)
         .attr("cx", (d: any) => x(d.x))
         .attr("cy", (d: any) => y(d.y));
+}
+
+function drawCrossLine(selection: any) {
+    return selection
+        .attr("stroke", "red");
 }
