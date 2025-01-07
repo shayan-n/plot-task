@@ -1,12 +1,10 @@
-import Container from "~/Components/Container";
-import Properties from "~/Components/Properties";
+import Plot from "~/Components/Plot/Plot";
+import Container from "~/Components/Global/Layout/Container";
 
 export default function _index() {
     return (
         <Container>
-            <Properties 
-
-            />
+            <Plot />
         </Container>
     );
 }
