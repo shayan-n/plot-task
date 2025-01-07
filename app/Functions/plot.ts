@@ -42,6 +42,8 @@ export function plot({
     const $yAxis = $svg.select("#y-axis");
     const $grid = $svg.select("#grid");
     const $view = $svg.select("#view");
+    const $cross = $svg.select("#cross");
+    const $brush = $svg.select("#brush");
 
     // Defining scales
     const x = bound === null ? (
@@ -64,7 +66,9 @@ export function plot({
     const yAxis = d3.axisLeft(y);
     
     // Draw
-    if (bound) {
+    const draw = () => {
+        if (bound === null) return;
+
         // Axises
         $xAxis.attr("transform", `translate(0,${bound.height - margin.bottom})`)
           .call(xAxis as any);
@@ -73,13 +77,13 @@ export function plot({
           .call(yAxis as any);
         
         // Grid
-        const xTickCount = x.domain()[1] - x.domain()[0] + 1; 
+        const xTickCount = domain[1] - domain[0] + 1; 
         $grid.select('#grid-vertical-lines').call(
             drawGridLines, x.ticks(xTickCount),
             x, bound, margin, "vertical"
         )
         
-        const yTickCount = y.domain()[1] - y.domain()[0] + 1; 
+        const yTickCount = range[1] - range[0] + 1; 
         $grid.select("#grid-horizontal-lines").call(
             drawGridLines, y.ticks(yTickCount),
             y, bound, margin, "horizontal"
@@ -90,13 +94,16 @@ export function plot({
     }
 
     // Events
+    // - zoom
+    const zoom = d3.zoom();
+
     const handleZoom = (e: D3ZoomEvent<any, any>) => {
         const { transform } = e;
         
         const rescaleX = transform.rescaleX(x);
-        const xTickCount = x.domain()[1] - x.domain()[0] + 1;
+        const xTickCount = domain[1] - domain[0] + 1;
         const rescaleY = transform.rescaleY(y);
-        const yTickCount = y.domain()[1] - y.domain()[0] + 1;
+        const yTickCount = range[1] - range[0] + 1;
 
         $view.attr("transform", transform.toString());
         $xAxis.call(xAxis.scale(rescaleX) as any);
@@ -111,17 +118,63 @@ export function plot({
             rescaleY.ticks(yTickCount),
             rescaleY, bound, margin, "horizontal",
         );
-    };
+    }
 
-    const zoom = d3
-      .zoom()
-      .on("zoom", handleZoom);
+    const reset = () => {
+        $svg.call(zoom.transform, d3.zoomIdentity);
+    }
 
-    $svg.call(zoom as any);
+    const lockZoom = () => {
+        zoom.on("zoom", null);
+    }
+
+    const applyZoom = () => {
+        zoom.on("zoom", handleZoom);
+    }
+    
+    const zoomOnASection = (e: any) => {
+        $svg.call(zoom.extent(e.selection));
+    }
+
+    // - cross
+    const handleCross = (e: any) => {
+        if (bound === null) return;
+        const [mouseX, mouseY] = d3.pointer(e);
+        
+        $cross
+          .select("#vertical-cross")
+          .attr("x1", mouseX)
+          .attr("x2", mouseX)
+          .attr("y1", margin.top)
+          .attr("y2", bound.height - margin.bottom)
+          .attr("stroke", "red");
+
+        $cross
+          .select("#horizontal-cross")
+            .attr("y1", mouseY)
+            .attr("y2", mouseY)
+            .attr("x1", margin.left)
+            .attr("x2", bound.width - margin.right)
+            .attr("stroke", "red");
+    }
+    
+    // - zoom by brush
+    const brush = d3.brush();
+
+
+    // brush.on("brush", handleBrush);
+    brush.on("end", zoomOnASection)
+
+    // Apply
+    // $svg.call(zoom as any);
+    $brush.call(brush as any);
+    applyZoom();
+    // $svg.on("mousemove", handleCross);
+    draw();
 }
 
 function drawGridLines(selection: any, ticks: number[], x: any, bound: Bound, margin: IMargin, dir: "vertical" | "horizontal") {
-    if (!bound) return;
+    if (bound === null) return;
 
     const a1 = [dir === "vertical" ? "x1" : "y1", (d: any) => x(d)];
     const a2 = [dir === "vertical" ? "x2" : "y2", (d: any) => x(d)];

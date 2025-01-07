@@ -53,6 +53,11 @@ export default function Plot() {
                 <g id="grid-horizontal-lines"></g>
             </g>
             <g id="view"></g>
+            <g id="cross">
+                <line id="horizontal-cross"></line>
+                <line id="vertical-cross"></line>
+            </g>
+            <g id="brush"></g>
         </svg>
     );
 }
