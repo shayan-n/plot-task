@@ -1,6 +1,6 @@
-export default function Collapse({ collapse, children, className, smooth=true }) {
+export default function Collapse({ collapse, children, className }) {
     return (
-        <div className={`overflow-hidden ${collapse ? 'max-h-0 p-0' : 'max-h-screen'} ${smooth ? 'transition-all duration-700' : ''} ${className ? className : ''}`}>
+        <div className={`transition-all duration-300 overflow-hidden ${collapse ? '!py-0 max-h-0' : 'max-h-screen'} ${className ? className : ''}`}>
             {children}
         </div>
     );

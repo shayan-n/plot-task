@@ -172,7 +172,7 @@ export function plot({
     // Apply
     // $svg.call(zoom as any);
     // $brush.call(brush as any);
-    // brush.on("end", zoomOnASection)
+    // brush.on("end", zoomOnSelection)
     // applyZoom();
     // $svg.on("mousemove", handleCross);
     initDraw();

@@ -3,47 +3,56 @@
 @tailwind utilities;
 
 $primary: #025ec2;
-$shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
+$borderShadow: rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+$sketchShadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 
 * {
     font-family: "Lexend";
 }
 
 :focus {
-    outline: 2px solid $primary;
+    outline: none;
 }
 
-.ui-input {
-    padding: 0.5rem .75rem;
-    border-radius: .5rem;
+.ui-input-container {
     display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    box-shadow: $shadow;
     justify-content: center;
-
+    align-items: center;
+    gap: 1rem;
+    
     label {
         font-size: .875rem;
         color: #414141;
+        white-space: nowrap;
     }
 
-    input {
-        all: unset;
-        width: 100%;
-        font-size: 1rem;
-        color: #000;
-        font-weight: 300;
-    }
-
-    &:active {
-        outline: 2px solid $primary;
-    }
-
-    &:hover {
-        background-color: darken(#fff, 2);
+    .ui-input {
+        padding: 0.5rem .75rem;
+        border-radius: .5rem;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        box-shadow: $borderShadow;
+        justify-content: center;
+    
+        input {
+            all: unset;
+            width: 100%;
+            font-size: 1rem;
+            color: #000;
+            font-weight: 300;
+        }
+    
+        &:active, &:has(input:focus) {
+            outline: 2px solid $primary;
+        }
+    
+        &:hover, &:has(input:focus) {
+            background-color: darken(#fff, 2);
+        }
     }
 }
 
-svg {
-    border: 3px solid red;
+.sketch-shadow {
+    box-shadow: $sketchShadow;
 }
