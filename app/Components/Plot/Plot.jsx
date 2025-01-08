@@ -1,12 +1,16 @@
 import { plot } from "~/Functions/plot.ts";
 import { useEffect, useRef, useState } from "react";
+import { usePlotStore } from "~/Context/PlotProvider";
 
 export default function Plot() {
     const svgRef = useRef(null);
     const [bound, setBound] = useState(null);
-    const [d, setD] = useState([0, 10]);
-    const [r, setR] = useState([0, 10]);
-    
+    const { 
+        domain, setDomain, 
+        range, setRange,
+        margin
+    } = usePlotStore();
+
     // only re-render on window change
     useEffect(() => {
         function setBoundary() {
@@ -22,15 +26,8 @@ export default function Plot() {
     // d3
     plot({
         svgNode: svgRef.current,
-        bound: bound,
-        domain: d,
-        range: r,
-        margin: {
-            top: 30,
-            right: 30,
-            bottom: 30,
-            left: 30,
-        },
+        bound, domain, range, margin,
+        setDomain, setRange,
         data: [
             { x: 0, y: 0 },
             { x: 3, y: 2 },
@@ -41,8 +38,6 @@ export default function Plot() {
             { x: 1, y: 8 },
             { x: 3, y: 6 },
         ],
-        setDomain: setD,
-        setRange: setR,
     });
 
     return (

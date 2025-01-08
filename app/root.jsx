@@ -7,6 +7,7 @@ import {
 } from "@remix-run/react";
 
 import mainStyle from "~/Styles/main.css?url"; 
+import { PlotProvider } from "./Context/PlotProvider";
 
 export function Layout({ children }) {
   return (
@@ -27,7 +28,11 @@ export function Layout({ children }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <PlotProvider>
+      <Outlet />
+    </PlotProvider>
+  );
 }
 
 export function links() {

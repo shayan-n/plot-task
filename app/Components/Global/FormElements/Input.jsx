@@ -2,7 +2,7 @@ import { useRef } from "react";
 
 export default function Input({ 
     label, placeholder,
-    name, place="in",
+    name, place="in", type="text",
     value, setValue=null 
 }) {
     const ref = useRef(null);
@@ -32,7 +32,7 @@ export default function Input({
                 }
                 <input 
                     ref={ref}
-                    type="text" 
+                    type={type} 
                     name={name}
                     placeholder={placeholder}
                     {...controlledElementProps}
