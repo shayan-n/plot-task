@@ -14,7 +14,7 @@ export default function Properties() {
         title, setTitle,
         xLabel, setXLabel,
         yLabel, setYLabel,
-        dataPoints
+        dataPoints, plot
     } = usePlotStore();
     const [x, setX] = useState(0); 
     const [y, setY] = useState(0); 
@@ -22,7 +22,8 @@ export default function Properties() {
 
     function handleAdd() {
         if ((x || x === 0) && (y || y === 0) && !dataPoints.some(d => d.x === x && d.y === y)) {
-            dataPoints.push({ x, y, label })
+            dataPoints.push({ x, y, label });
+            plot?.draw?.();
         } else {
             console.log("try again!");
         }
@@ -60,7 +61,6 @@ export default function Properties() {
             <CollapseBox
                 title={"Spans"}
                 className="flex flex-col gap-3"
-                defaultCollapse
             >
                 <div className="flex flex-col gap-2">
                     <h3 className="text-zinc-500">Domain</h3>
@@ -145,6 +145,7 @@ export default function Properties() {
             <CollapseBox
                 title={"Data"}
                 className="flex flex-col gap-4"
+                defaultCollapse
             >
                 <div className="flex flex-col gap-4">
                     <Input

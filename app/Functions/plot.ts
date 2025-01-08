@@ -45,6 +45,7 @@ export function plot({
     const $view = $svg.select("#view");
     const $walls = $svg.select("#walls");
     const $cross = $svg.select("#cross");
+    const $detail = $svg.select("#detail-view");
 
     // Defining scales
     const x = bound === null ? (
@@ -69,7 +70,7 @@ export function plot({
     // Draw
     const draw = () => {
         // Draw Datas on view
-        $view.call(drawDatas, data, x, y);
+        $view.call(drawDatas, data, x, y, $detail);
     };
 
     const initDraw = () => {
@@ -151,7 +152,13 @@ export function plot({
     }
 
     const resetZoom = () => {
+        const zoomWasOn = zoom.on("zoom") !== null;
+        
+        applyZoom();
         $svg.call(zoom.transform, d3.zoomIdentity);
+        $svg.call(zoom);
+
+        if (!zoomWasOn) lockZoom();
     }
 
     const lockZoom = () => {
@@ -257,18 +264,41 @@ function drawGridLines(selection: any, ticks: number[], x: any, bound: Bound, ma
         .attr(...a4);
 }
 
-function drawDatas(selection: any, data: PlotPoint[], x: any, y: any) {
-    return selection
+function drawDatas(selection: any, data: PlotPoint[], x: any, y: any, $detail: any) {
+    const lineData = data.reduce((prev, c, ind): any => {
+        return ind === 0 ? [[c, c]] : [...prev, [prev[ind - 1][1], c]]
+    }, []).slice(1);
+
+    selection
+      .selectAll("line")
+      .data(lineData)
+      .join("line")
+        .attr("x1", (d: any) => x(d[0].x))
+        .attr("y1", (d: any) => y(d[0].y))
+        .attr("x2", (d: any) => x(d[1].x))
+        .attr("y2", (d: any) => y(d[1].y))
+        .attr("stroke", "#f472b6")
+        .attr("stroke-width", "3")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+    
+    selection
       .selectAll("circle")
       .data(data)
       .join("circle")
-        .attr("r", 3)
+        .attr("r", 5)
         .attr("cx", (d: any) => x(d.x))
         .attr("cy", (d: any) => y(d.y))
-        .attr("fill", "orange");
+        .attr("fill", "#9d174d")
+      .on("mouseenter", (e: any, d: PlotPoint) => {
+        $detail.text(`"${d.label}"`)
+      }).on("mouseleave", () => {
+        $detail.text('')
+      });
 }
 
 function drawCrossLine(selection: any) {
     return selection
-        .attr("stroke", "red");
+        .attr("stroke", "#ff2e43")
+        .attr("stroke-width", "2");
 }

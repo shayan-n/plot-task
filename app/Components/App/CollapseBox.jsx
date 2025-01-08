@@ -7,7 +7,7 @@ export default function CollapseBox({ title, children, className='', defaultColl
     const [collapse, setCollapse] = useState(defaultCollapse);
 
     return (
-        <div className={`w-full select-none flex flex-col rounded-xl sketch-shadow shrink overflow-hidden`}>
+        <div className={`w-full select-none flex flex-col rounded-xl sketch-shadow shrink overflow-hidden bg-white`}>
             <div 
                 role="button"
                 tabIndex={-1}

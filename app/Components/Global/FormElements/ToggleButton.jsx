@@ -20,7 +20,7 @@ export default function ToggleButton({
 }) {
     if (!(buttons instanceof Array) || buttons.length < 1) return <></>;
     return (
-        <div className="flex flex-col sketch-shadow rounded-xl w-fit h-fit">
+        <div className="flex flex-col sketch-shadow rounded-xl w-fit h-fit bg-white">
             {
                 buttons.map((button, ind) => (
                     <React.Fragment key={`toggle-button-${ind}`}>
